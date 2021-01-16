@@ -1,0 +1,76 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dashboard Monitoring Sensor</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+  <!-- <script src="{% static "JSON/data1.json" %}"></script> -->
+</head>
+
+<body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Departemen Fisika</a>
+    </nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="../">
+              <span data-feather="home"></span>
+              Dashboard <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../daftar_sensor/">
+              <span data-feather="file"></span>
+              Daftar Sensor
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../data_pengukuran/">
+              <span data-feather="bar-chart-2"></span>
+              Data Pengukuran
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4" id="mymain">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Daftar sensor</h1>
+                    <h4 id="a"></h4>
+      </div>
+      <div>
+          {% for i in sensor %}
+              <h4>{{ i.nama }}</h4>
+              <p style="text-align: justify">{{ i.deskripsi }}</p>
+          {% endfor %}
+      </div>
+    </main>
+  </div>
+</div>
+
+
+
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+<script type="text/javascript">
+          $(document).ready(function(){
+            $('.dropdown-toggle').dropdown();
+          });
+</script>
+
+</body>
+</html>

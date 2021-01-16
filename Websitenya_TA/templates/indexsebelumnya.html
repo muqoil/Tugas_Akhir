@@ -1,0 +1,189 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dashboard Monitoring Sensor</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+  <!-- <script src="{% static "JSON/data1.json" %}"></script> -->
+</head>
+
+<body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
+      <a class="navbar-brand col-md-3 col-lg-2 mr-0 px-3" href="#">Departemen Fisika</a>
+    </nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+      <div class="sidebar-sticky pt-3">
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link active" href="../dashboard/">
+              <span data-feather="home"></span>
+              Dashboard <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../daftar_sensor/">
+              <span data-feather="file"></span>
+              Daftar Sensor
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="../data_pengukuran/">
+              <span data-feather="bar-chart-2"></span>
+              Data Pengukuran
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-md-4">
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Dashboard</h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+          <span data-feather="calendar">Pilih Grafik</span>
+
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+          <button type="button" class="dropdown-item" name="button" onclick="setgrafik(0)">Sensor Curah Hujan</button>
+          <button type="button" class="dropdown-item" name="button" onclick="setgrafik(1)">Sensor Suhu</button>
+          <button type="button" class="dropdown-item" name="button" onclick="setgrafik(2)">Sensor Intensitas Cahaya</button>
+          <button type="button" class="dropdown-item" name="button" onclick="setgrafik(3)">Sensor pH</button>
+          <button type="button" class="dropdown-item" name="button" onclick="setgrafik(4)">Sensor Salinitas</button>
+          <button type="button" class="dropdown-item" name="button" onclick="setgrafik(5)">Sensor Kedalaman Air</button>
+        </div>
+        </div>
+      </div>
+      <div>
+        <div style="align:center">
+          <h3 id="judulGrafik1" style="text-align:center">Silahkan klik "pilih Grafik" untuk menampilkan Grafik</h3>
+          <div id="chart" style="height: 300px;"></div>
+        </div>
+
+      <h2>Live Measurement</h2>
+      <div class="">
+        <h3 id="sensor1"></h3>
+        <h3 id="sensor2"></h3>
+        <h3 id="sensor3"></h3>
+        <h3 id="sensor4"></h3>
+        <h3 id="sensor5"></h3>
+        <h3 id="sensor6"></h3>
+
+      </div>
+    </main>
+
+  </div>
+</div>
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+<script type="text/javascript">
+          $(document).ready(function(){
+            $('.dropdown-toggle').dropdown();
+          });
+</script>
+
+<script>
+function setgrafik(pilih){
+  try {
+    stop();
+    showgrafik(pilih);
+  } catch (e) {
+    console.log(e)
+  }
+}
+function showgrafik(pilih){
+  var jenis = ["Curah Hujan", "Suhu", "Intensitas Cahaya", "pH", "Salinitas", "Kedalam Air"]
+  var a = document.getElementById('judulGrafik1');
+    a.innerHTML='Grafik Pengukuran Sensor ' + jenis[pilih];
+
+  var time = new Date();
+
+  var data = [{
+    x: [time],
+    y: [0],
+    mode: 'lines',
+    line: {color: '#80CAF6'},
+    name: 'Sensor Suhu',
+  }]
+
+  Plotly.newPlot('chart', []);
+  Plotly.newPlot('chart', data);
+  updategrafik(pilih)
+}
+function updategrafik(pilih){
+  if(typeof(EventSource) !== "undefined") {
+    var source = new EventSource("get_data_from_data_base/");
+    source.onmessage = function(event) {
+
+      var dataGrafik = event.data;
+      console.log(dataGrafik);
+      var pixGrafik = dataGrafik.split(",");
+      var time = new Date();
+      var update = {
+      x:  [[time]],
+      y: [[pixGrafik[pilih]]]
+      }
+
+      var olderTime = time.setMinutes(time.getMinutes() - 1);
+        var futureTime = time.setMinutes(time.getMinutes() + 1);
+
+        var minuteView = {
+              xaxis: {
+                type: 'date',
+                range: [olderTime,futureTime]
+              }
+            };
+
+        Plotly.relayout('chart', minuteView);
+        Plotly.extendTraces('chart', update, [0])
+
+    };
+
+  } else {
+    document.getElementById("sensor1").innerHTML = "Sorry, your browser does not support server-sent events...";
+  }
+  function stop(){
+    source.close();
+  }
+};
+</script>
+<script>
+if(typeof(EventSource) !== "undefined") {
+  var getData = new EventSource("get_data_from_data_base/");
+  getData.onmessage = function(event) {
+
+    var dataGet = event.data;
+    var pixGet = dataGet.split(",");
+    document.getElementById("sensor1").innerHTML = "data pengukuran sensor Curah Hujan : " + pixGet[0] + " milimeter";
+    document.getElementById("sensor2").innerHTML = "data pengukuran sensor Suhu : " + pixGet[1] + " <sup>o</sup>C";
+    document.getElementById("sensor3").innerHTML = "data pengukuran sensor Intensitas Cahaya : " + pixGet[2] + " LUX";
+    document.getElementById("sensor4").innerHTML = "data pengukuran sensor pH : " + pixGet[3] + " pH";
+    document.getElementById("sensor5").innerHTML = "data pengukuran sensor Salinitas : " + pixGet[4] + " ppt";
+    document.getElementById("sensor6").innerHTML = "data pengukuran sensor Kedalaman Air : " + pixGet[5] + " cm";
+  };
+
+} else {
+  document.getElementById("sensor1").innerHTML = "Sorry, your browser does not support server-sent events...";
+}
+
+</script>
+<script>
+if(typeof(EventSource) !== "undefined") {
+  var senData = new EventSource("sent_data_to_database/");
+} else {
+  document.getElementById("sensor1").innerHTML = "Sorry, your browser does not support server-sent events...";
+}
+</script>
+</body>
+</html>

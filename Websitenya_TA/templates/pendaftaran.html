@@ -1,0 +1,93 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dashboard Monitoring Sensor</title>
+
+  <!-- Bootstrap core CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+  <script src="https://cdn.plot.ly/plotly-1.2.0.min.js"></script>
+  <!-- <script src="{% static "JSON/data1.json" %}"></script> -->
+</head>
+
+<body>
+  <h2>Pendaftaran Pemilihan Ketua Umum Himafi Tahun 2020/2021</h2>
+  <form class="form-inline" method="POST" id="getdata">
+      <div class="form-group">
+        <label for="formNama">Nama</label>
+        <input type="text" class="form-control" id="formNama" name="Nama" value="" maxlength="50" minlength="1" required>
+      </div>
+      <div class="form-group">
+        <label for="formNIK">NIK</label>
+        <input type="text" class="form-control" id="formNIK" name="NIK" value="" maxlength="50" minlength="1" required>
+      </div>
+      <div class="form-group">
+        <label for="formNIM">NIM</label>
+        <input type="text" class="form-control" id="formNIM" name="NIM" value="" maxlength="50" minlength="1" required>
+      </div>
+      <div class="form-group">
+        <label for="formDateBirth">Tanggal Lahir</label>
+        <input type="date" class="form-control" id="formDateBirth" name="TanggalLahir" value="">
+      </div>
+      <div class="form-group">
+        <label for="formNIM">Angkatan</label>
+        <select class="custom-select mr-sm-2" id="inlineFormCustomSelect" name="selectedrange">
+         <option selected>Angkatan</option>
+         <option value="2014">2014</option>
+         <option value="2015">2015</option>
+         <option value="2016">2016</option>
+         <option value="2017">2017</option>
+         <option value="2018">2018</option>
+         <option value="2019">2019</option>
+        </select>
+      </div>
+     <button type="submit" class="btn btn-primary">Submit</button>
+  </form>
+
+  <script type="text/javascript" src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/feather-icons/4.9.0/feather.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <script>
+  $('#getdata').on('submit', function(e){
+
+  e.preventDefault();
+
+  $.ajax({
+       type : "POST",
+       url: "ajax-posting/",
+       data: {
+        Dari : $('#from').val(),
+        Sampai : $('#to').val(),
+        Rentang : $('#inlineFormCustomSelect').val(),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+        dataType: "json",
+
+       },
+
+       success: function(data){
+          if (data.pesan !== ",,Pilih Rentang"){
+            $('#dataTampil').html(data.pesan),
+            alert(data.alert) /* response message */
+          }else {
+            alert(data.alert)
+          }
+
+       },
+
+       failure: function() {
+
+       }
+
+
+   });
+
+
+        });
+  </script>
+</body>
+</html>
